@@ -13,8 +13,7 @@ certManager:
   serviceAccountName: cert-manager
 
 image:
-  repository: qqshfox/cert-manager-webhook-dnspod
-  #tag: latest
+  repository: kaelz/cert-manager-dnspod-webhook
   pullPolicy: IfNotPresent
 
 nameOverride: ""

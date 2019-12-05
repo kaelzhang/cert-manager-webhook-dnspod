@@ -1,4 +1,8 @@
-# DNSPod Webhook for Cert Manager
+# Cert-manager webhook for DNSPod
+
+> A fork of [qqshfox/cert-manager-webhook-dnspod](https://github.com/qqshfox/cert-manager-webhook-dnspod)
+
+Updated to cert-manager 0.12.0
 
 This is a webhook solver for [DNSPod](https://www.dnspod.cn).
 
