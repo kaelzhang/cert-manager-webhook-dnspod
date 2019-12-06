@@ -12,6 +12,5 @@
 *.out
 
 # Ignore the built binary
-cert-manager-webhook-dnspod
 _out
 __main__
