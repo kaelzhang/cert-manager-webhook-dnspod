@@ -2,19 +2,17 @@
 
 > A fork of [qqshfox/cert-manager-webhook-dnspod](https://github.com/qqshfox/cert-manager-webhook-dnspod)
 
-Updated to cert-manager 0.12.0
-
 This is a webhook solver for [DNSPod](https://www.dnspod.cn).
 
 ## Prerequisites
 
-* [cert-manager](https://github.com/jetstack/cert-manager): *tested with 0.8.0*
-    - [Installing on Kubernetes](https://docs.cert-manager.io/en/release-0.8/getting-started/install/kubernetes.html)
+* [cert-manager (>= 0.12.0)](https://github.com/jetstack/cert-manager)
+    - [Installing on Kubernetes](https://cert-manager.io/docs/installation/kubernetes/)
 
 ## Installation
 
 ```console
-$ helm install --name cert-manager-webhook-dnspod ./deploy/example-webhook
+$ helm install cert-manager-dnspod-webhook ./deploy/example-webhook
 ```
 
 ## Issuer
