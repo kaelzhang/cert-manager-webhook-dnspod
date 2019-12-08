@@ -106,10 +106,6 @@ spec:
           servicePort: 80
 ```
 
-### Automatically creating Certificates for Ingress resources
-
-See [this](https://docs.cert-manager.io/en/latest/tasks/issuing-certificates/ingress-shim.html).
-
 ## Development
 
 All DNS providers **must** run the DNS01 provider conformance testing suite,
