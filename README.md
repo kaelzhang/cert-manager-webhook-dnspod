@@ -21,8 +21,8 @@ $ helm install cert-manager-webhook-dnspod ./charts
 
 - Create secret to store the API Token
 
-```console
-$ kubectl --namespace cert-manager create secret generic \
+```sh
+kubectl --namespace cert-manager create secret generic \
     dnspod-credentials --from-literal=api-token='<DNSPOD_API_TOKEN>'
 ```
 
@@ -118,16 +118,16 @@ An example Go test file has been provided in [main_test.go]().
 
 Before you can run the test suite, you need to download the test binaries:
 
-```console
-$ mkdir __main__
-$ wget -O- https://storage.googleapis.com/kubebuilder-tools/kubebuilder-tools-1.14.1-darwin-amd64.tar.gz | tar x -
-$ mv kubebuilder __main__/hack
+```sh
+mkdir __main__
+wget -O- https://storage.googleapis.com/kubebuilder-tools/kubebuilder-tools-1.14.1-darwin-amd64.tar.gz | tar x -
+mv kubebuilder __main__/hack
 ```
 
 Then modify `testdata/my-custom-solver/config.json` to setup the configs.
 
 Now you can run the test suite with:
 
-```bash
-$ TEST_ZONE_NAME=example.com go test .
+```sh
+TEST_ZONE_NAME=example.com go test .
 ```
