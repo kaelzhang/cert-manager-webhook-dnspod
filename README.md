@@ -1,6 +1,6 @@
 # Cert-Manager ACME webhook for DNSPod
 
-> A fork of [qqshfox/cert-manager-webhook-dnspod](https://github.com/qqshfox/cert-manager-webhook-dnspod)
+> A fork of [qqshfox/cert-manager-webhook-dnspod](https://github.com/qqshfox/cert-manager-webhook-dnspod), and is updated to cert-manager >= 0.12.0
 
 This is a webhook solver for [DNSPod](https://www.dnspod.cn).
 
