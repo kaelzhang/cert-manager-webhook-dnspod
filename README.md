@@ -28,7 +28,7 @@ $ kubectl --namespace cert-manager create secret generic \
 
 ### ClusterIssuer
 
-Create a production issuer.
+Create a production issuer. And you could create a staging letsencrypt issuer if necessary.
 
 ```yaml
 apiVersion: cert-manager.io/v1alpha2
