@@ -1,7 +1,10 @@
 apiVersion: apiregistration.k8s.io/v1beta1
 kind: APIService
 metadata:
-  name: v1alpha1.{{ .Values.groupName }}
+  # If an error as unable to retrieve the complete list of server APIs occurs,
+  # you need to delete the apiservice from kubernetes
+  # kubectl delete apiservice v1beta1.certmanager.webhook.dnspod.{{groupName}}
+  name: v1beta1.certmanager.webhook.dnspod.{{ .Values.groupName }}
   labels:
     app: {{ include "dnspod-webhook.name" . }}
     chart: {{ include "dnspod-webhook.chart" . }}
