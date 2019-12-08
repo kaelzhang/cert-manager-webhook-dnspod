@@ -1,4 +1,4 @@
-# Cert-manager webhook for DNSPod
+# Cert-Manager ACME webhook for DNSPod
 
 > A fork of [qqshfox/cert-manager-webhook-dnspod](https://github.com/qqshfox/cert-manager-webhook-dnspod)
 
@@ -6,84 +6,33 @@ This is a webhook solver for [DNSPod](https://www.dnspod.cn).
 
 ## Prerequisites
 
-* [cert-manager (>= 0.12.0)](https://github.com/jetstack/cert-manager)
-    - [Installing on Kubernetes](https://cert-manager.io/docs/installation/kubernetes/)
+- [cert-manager](https://github.com/jetstack/cert-manager): >= 0.12.0
+  - [Installing on Kubernetes](https://cert-manager.io/docs/installation/kubernetes/)
 
 ## Installation
 
 ```console
-$ helm install cert-manager-dnspod-webhook ./deploy/example-webhook
+$ helm install cert-manager-webhook-dnspod ./charts
 ```
 
-## Issuer
+### Prepare for DNSPod
 
-1. Generate API ID and API Token from DNSPod (https://support.dnspod.cn/Kb/showarticle/tsid/227/)
-2. Create secret to store the API Token
+- Generate API ID and API Token from DNSPod (https://support.dnspod.cn/Kb/showarticle/tsid/227/)
+
+- Create secret to store the API Token
+
 ```console
 $ kubectl --namespace cert-manager create secret generic \
     dnspod-credentials --from-literal=api-token='<DNSPOD_API_TOKEN>'
 ```
 
-3. Grant permission for service-account to get the secret
+### ClusterIssuer
+
+Create a production issuer.
+
 ```yaml
-apiVersion: rbac.authorization.k8s.io/v1
-kind: Role
-metadata:
-  name: cert-manager-webhook-dnspod:secret-reader
-rules:
-- apiGroups: [""]
-  resources: ["secrets"]
-  resourceNames: ["dnspod-credentials"]
-  verbs: ["get", "watch"]
----
-apiVersion: rbac.authorization.k8s.io/v1beta1
-kind: RoleBinding
-metadata:
-  name: cert-manager-webhook-dnspod:secret-reader
-roleRef:
-  apiGroup: rbac.authorization.k8s.io
-  kind: Role
-  name: cert-manager-webhook-dnspod:secret-reader
-subjects:
-  - apiGroup: ""
-    kind: ServiceAccount
-    name: cert-manager-webhook-dnspod
-```
-
-4. Create a staging issuer *Optional*
-```yaml
-apiVersion: certmanager.k8s.io/v1alpha1
-kind: Issuer
-metadata:
-  name: letsencrypt-staging
-spec:
-  acme:
-    # The ACME server URL
-    server: https://acme-staging-v02.api.letsencrypt.org/directory
-
-    # Email address used for ACME registration
-    email: user@example.com # REPLACE THIS WITH YOUR EMAIL!!!
-
-    # Name of a secret used to store the ACME account private key
-    privateKeySecretRef:
-      name: letsencrypt-staging
-
-    solvers:
-    - dns01:
-        webhook:
-          groupName: example.com # REPLACE THIS TO YOUR GROUP
-          solverName: dnspod
-          config:
-            apiID: 12345 # REPLACE WITH API ID FROM DNSPOD!!!
-            apiTokenSecretRef:
-              key: api-token
-              name: dnspod-credentials
-```
-
-5. Create a production issuer
-```yaml
-apiVersion: certmanager.k8s.io/v1alpha1
-kind: Issuer
+apiVersion: cert-manager.io/v1alpha2
+kind: ClusterIssuer
 metadata:
   name: letsencrypt-prod
 spec:
@@ -92,7 +41,7 @@ spec:
     server: https://acme-v02.api.letsencrypt.org/directory
 
     # Email address used for ACME registration
-    email: user@example.com # REPLACE THIS WITH YOUR EMAIL!!!
+    email: <your email>
 
     # Name of a secret used to store the ACME account private key
     privateKeySecretRef:
@@ -101,20 +50,60 @@ spec:
     solvers:
     - dns01:
         webhook:
-          groupName: example.com # REPLACE THIS TO YOUR GROUP
+          groupName: <your group>
           solverName: dnspod
           config:
-            apiID: 12345 # REPLACE WITH API ID FROM DNSPOD!!!
+            apiID: <your dnspod api id>
             apiTokenSecretRef:
               key: api-token
               name: dnspod-credentials
 ```
 
-## Certificate
+### Certificate
 
-1. Issue a certificate
 ```yaml
-#TODO
+apiVersion: cert-manager.io/v1alpha2
+kind: Certificate
+metadata:
+  # you could replace this name to your own
+  name: wildcard-yourdomain-com # for *.yourdomain.com
+spec:
+  secretName: wildcard-yourdomain-com-tls
+  renewBefore: 240h
+  dnsNames:
+    - '*.yourdomain.com'
+  issuerRef:
+    name: letsencrypt-prod
+    kind: ClusterIssuer
+```
+
+### Ingress
+
+A common use-case for cert-manager is requesting TLS signed certificates to secure your ingress resources. This can be done by simply adding annotations to your Ingress resources and cert-manager will facilitate creating the Certificate resource for you. A small sub-component of cert-manager, ingress-shim, is responsible for this.
+
+For details, see [here](https://cert-manager.io/docs/usage/ingress/)
+
+```yaml
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: demo-ingress
+  namespace: default
+  annotations:
+    cert-manager.io/cluster-issuer: "letsencrypt-prod"
+spec:
+  tls:
+  - hosts:
+    - '*.yourdomain.com'
+    secretName: wildcard-yourdomain-com-tls
+  rules:
+  - host: demo.yourdomain.com
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: backend-service
+          servicePort: 80
 ```
 
 ### Automatically creating Certificates for Ingress resources
