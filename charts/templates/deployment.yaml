@@ -1,25 +1,25 @@
 apiVersion: apps/v1beta2
 kind: Deployment
 metadata:
-  name: {{ include "dnspod-webhook.fullname" . }}
+  name: {{ include "webhook-dnspod.fullname" . }}
   labels:
-    app: {{ include "dnspod-webhook.name" . }}
-    chart: {{ include "dnspod-webhook.chart" . }}
+    app: {{ include "webhook-dnspod.name" . }}
+    chart: {{ include "webhook-dnspod.chart" . }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
 spec:
   replicas: {{ .Values.replicaCount }}
   selector:
     matchLabels:
-      app: {{ include "dnspod-webhook.name" . }}
+      app: {{ include "webhook-dnspod.name" . }}
       release: {{ .Release.Name }}
   template:
     metadata:
       labels:
-        app: {{ include "dnspod-webhook.name" . }}
+        app: {{ include "webhook-dnspod.name" . }}
         release: {{ .Release.Name }}
     spec:
-      serviceAccountName: {{ include "dnspod-webhook.fullname" . }}
+      serviceAccountName: {{ include "webhook-dnspod.fullname" . }}
       containers:
         - name: {{ .Chart.Name }}
           image: "{{ .Values.image.repository }}:{{ default .Chart.AppVersion .Values.image.tag }}"
@@ -53,7 +53,7 @@ spec:
       volumes:
         - name: certs
           secret:
-            secretName: {{ include "dnspod-webhook.servingCertificate" . }}
+            secretName: {{ include "webhook-dnspod.servingCertificate" . }}
     {{- with .Values.nodeSelector }}
       nodeSelector:
 {{ toYaml . | indent 8 }}

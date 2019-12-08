@@ -2,7 +2,7 @@
 {{/*
 Expand the name of the chart.
 */}}
-{{- define "dnspod-webhook.name" -}}
+{{- define "webhook-dnspod.name" -}}
 {{- default .Chart.Name .Values.nameOverride | trunc 63 | trimSuffix "-" -}}
 {{- end -}}
 
@@ -11,7 +11,7 @@ Create a default fully qualified app name.
 We truncate at 63 chars because some Kubernetes name fields are limited to this (by the DNS naming spec).
 If release name contains chart name it will be used as a full name.
 */}}
-{{- define "dnspod-webhook.fullname" -}}
+{{- define "webhook-dnspod.fullname" -}}
 {{- if .Values.fullnameOverride -}}
 {{- .Values.fullnameOverride | trunc 63 | trimSuffix "-" -}}
 {{- else -}}
@@ -27,22 +27,22 @@ If release name contains chart name it will be used as a full name.
 {{/*
 Create chart name and version as used by the chart label.
 */}}
-{{- define "dnspod-webhook.chart" -}}
+{{- define "webhook-dnspod.chart" -}}
 {{- printf "%s-%s" .Chart.Name .Chart.Version | replace "+" "_" | trunc 63 | trimSuffix "-" -}}
 {{- end -}}
 
-{{- define "dnspod-webhook.selfSignedIssuer" -}}
-{{ printf "%s-selfsign" (include "dnspod-webhook.fullname" .) }}
+{{- define "webhook-dnspod.selfSignedIssuer" -}}
+{{ printf "%s-selfsign" (include "webhook-dnspod.fullname" .) }}
 {{- end -}}
 
-{{- define "dnspod-webhook.rootCAIssuer" -}}
-{{ printf "%s-ca" (include "dnspod-webhook.fullname" .) }}
+{{- define "webhook-dnspod.rootCAIssuer" -}}
+{{ printf "%s-ca" (include "webhook-dnspod.fullname" .) }}
 {{- end -}}
 
-{{- define "dnspod-webhook.rootCACertificate" -}}
-{{ printf "%s-ca" (include "dnspod-webhook.fullname" .) }}
+{{- define "webhook-dnspod.rootCACertificate" -}}
+{{ printf "%s-ca" (include "webhook-dnspod.fullname" .) }}
 {{- end -}}
 
-{{- define "dnspod-webhook.servingCertificate" -}}
-{{ printf "%s-webhook-tls" (include "dnspod-webhook.fullname" .) }}
+{{- define "webhook-dnspod.servingCertificate" -}}
+{{ printf "%s-webhook-tls" (include "webhook-dnspod.fullname" .) }}
 {{- end -}}

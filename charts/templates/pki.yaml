@@ -4,11 +4,11 @@
 apiVersion: cert-manager.io/v1alpha2
 kind: Issuer
 metadata:
-  name: {{ include "dnspod-webhook.selfSignedIssuer" . }}
+  name: {{ include "webhook-dnspod.selfSignedIssuer" . }}
   namespace: {{ .Release.Namespace | quote }}
   labels:
-    app: {{ include "dnspod-webhook.name" . }}
-    chart: {{ include "dnspod-webhook.chart" . }}
+    app: {{ include "webhook-dnspod.name" . }}
+    chart: {{ include "webhook-dnspod.chart" . }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
 spec:
@@ -20,19 +20,19 @@ spec:
 apiVersion: cert-manager.io/v1alpha2
 kind: Certificate
 metadata:
-  name: {{ include "dnspod-webhook.rootCACertificate" . }}
+  name: {{ include "webhook-dnspod.rootCACertificate" . }}
   namespace: {{ .Release.Namespace | quote }}
   labels:
-    app: {{ include "dnspod-webhook.name" . }}
-    chart: {{ include "dnspod-webhook.chart" . }}
+    app: {{ include "webhook-dnspod.name" . }}
+    chart: {{ include "webhook-dnspod.chart" . }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
 spec:
-  secretName: {{ include "dnspod-webhook.rootCACertificate" . }}
+  secretName: {{ include "webhook-dnspod.rootCACertificate" . }}
   duration: 43800h # 5y
   issuerRef:
-    name: {{ include "dnspod-webhook.selfSignedIssuer" . }}
-  commonName: "ca.dnspod-webhook.cert-manager"
+    name: {{ include "webhook-dnspod.selfSignedIssuer" . }}
+  commonName: "ca.webhook-dnspod.cert-manager"
   isCA: true
 
 ---
@@ -41,16 +41,16 @@ spec:
 apiVersion: cert-manager.io/v1alpha2
 kind: Issuer
 metadata:
-  name: {{ include "dnspod-webhook.rootCAIssuer" . }}
+  name: {{ include "webhook-dnspod.rootCAIssuer" . }}
   namespace: {{ .Release.Namespace | quote }}
   labels:
-    app: {{ include "dnspod-webhook.name" . }}
-    chart: {{ include "dnspod-webhook.chart" . }}
+    app: {{ include "webhook-dnspod.name" . }}
+    chart: {{ include "webhook-dnspod.chart" . }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
 spec:
   ca:
-    secretName: {{ include "dnspod-webhook.rootCACertificate" . }}
+    secretName: {{ include "webhook-dnspod.rootCACertificate" . }}
 
 ---
 
@@ -58,19 +58,19 @@ spec:
 apiVersion: cert-manager.io/v1alpha2
 kind: Certificate
 metadata:
-  name: {{ include "dnspod-webhook.servingCertificate" . }}
+  name: {{ include "webhook-dnspod.servingCertificate" . }}
   namespace: {{ .Release.Namespace | quote }}
   labels:
-    app: {{ include "dnspod-webhook.name" . }}
-    chart: {{ include "dnspod-webhook.chart" . }}
+    app: {{ include "webhook-dnspod.name" . }}
+    chart: {{ include "webhook-dnspod.chart" . }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
 spec:
-  secretName: {{ include "dnspod-webhook.servingCertificate" . }}
+  secretName: {{ include "webhook-dnspod.servingCertificate" . }}
   duration: 8760h # 1y
   issuerRef:
-    name: {{ include "dnspod-webhook.rootCAIssuer" . }}
+    name: {{ include "webhook-dnspod.rootCAIssuer" . }}
   dnsNames:
-  - {{ include "dnspod-webhook.fullname" . }}
-  - {{ include "dnspod-webhook.fullname" . }}.{{ .Release.Namespace }}
-  - {{ include "dnspod-webhook.fullname" . }}.{{ .Release.Namespace }}.svc
+  - {{ include "webhook-dnspod.fullname" . }}
+  - {{ include "webhook-dnspod.fullname" . }}.{{ .Release.Namespace }}
+  - {{ include "webhook-dnspod.fullname" . }}.{{ .Release.Namespace }}.svc

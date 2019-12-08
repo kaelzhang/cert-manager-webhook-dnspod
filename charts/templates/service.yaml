@@ -1,10 +1,10 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ include "dnspod-webhook.fullname" . }}
+  name: {{ include "webhook-dnspod.fullname" . }}
   labels:
-    app: {{ include "dnspod-webhook.name" . }}
-    chart: {{ include "dnspod-webhook.chart" . }}
+    app: {{ include "webhook-dnspod.name" . }}
+    chart: {{ include "webhook-dnspod.chart" . }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
 spec:
@@ -15,5 +15,5 @@ spec:
       protocol: TCP
       name: https
   selector:
-    app: {{ include "dnspod-webhook.name" . }}
+    app: {{ include "webhook-dnspod.name" . }}
     release: {{ .Release.Name }}

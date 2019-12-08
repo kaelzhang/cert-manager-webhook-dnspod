@@ -2,10 +2,10 @@
 apiVersion: v1
 kind: ServiceAccount
 metadata:
-  name: {{ include "dnspod-webhook.fullname" . }}
+  name: {{ include "webhook-dnspod.fullname" . }}
   labels:
-    app: {{ include "dnspod-webhook.name" . }}
-    chart: {{ include "dnspod-webhook.chart" . }}
+    app: {{ include "webhook-dnspod.name" . }}
+    chart: {{ include "webhook-dnspod.chart" . }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
 ---
@@ -15,11 +15,11 @@ metadata:
 apiVersion: rbac.authorization.k8s.io/v1beta1
 kind: RoleBinding
 metadata:
-  name: {{ include "dnspod-webhook.fullname" . }}:webhook-authentication-reader
+  name: {{ include "webhook-dnspod.fullname" . }}:webhook-authentication-reader
   namespace: kube-system
   labels:
-    app: {{ include "dnspod-webhook.name" . }}
-    chart: {{ include "dnspod-webhook.chart" . }}
+    app: {{ include "webhook-dnspod.name" . }}
+    chart: {{ include "webhook-dnspod.chart" . }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
 roleRef:
@@ -29,7 +29,7 @@ roleRef:
 subjects:
   - apiGroup: ""
     kind: ServiceAccount
-    name: {{ include "dnspod-webhook.fullname" . }}
+    name: {{ include "webhook-dnspod.fullname" . }}
     namespace: {{ .Release.Namespace }}
 ---
 # apiserver gets the auth-delegator role to delegate auth decisions to
@@ -37,10 +37,10 @@ subjects:
 apiVersion: rbac.authorization.k8s.io/v1beta1
 kind: ClusterRoleBinding
 metadata:
-  name: {{ include "dnspod-webhook.fullname" . }}:auth-delegator
+  name: {{ include "webhook-dnspod.fullname" . }}:auth-delegator
   labels:
-    app: {{ include "dnspod-webhook.name" . }}
-    chart: {{ include "dnspod-webhook.chart" . }}
+    app: {{ include "webhook-dnspod.name" . }}
+    chart: {{ include "webhook-dnspod.chart" . }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
 roleRef:
@@ -50,17 +50,17 @@ roleRef:
 subjects:
   - apiGroup: ""
     kind: ServiceAccount
-    name: {{ include "dnspod-webhook.fullname" . }}
+    name: {{ include "webhook-dnspod.fullname" . }}
     namespace: {{ .Release.Namespace }}
 ---
 # Grant cert-manager permission to validate using our apiserver
 apiVersion: rbac.authorization.k8s.io/v1beta1
 kind: ClusterRole
 metadata:
-  name: {{ include "dnspod-webhook.fullname" . }}:domain-solver
+  name: {{ include "webhook-dnspod.fullname" . }}:domain-solver
   labels:
-    app: {{ include "dnspod-webhook.name" . }}
-    chart: {{ include "dnspod-webhook.chart" . }}
+    app: {{ include "webhook-dnspod.name" . }}
+    chart: {{ include "webhook-dnspod.chart" . }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
 rules:
@@ -74,16 +74,16 @@ rules:
 apiVersion: rbac.authorization.k8s.io/v1beta1
 kind: ClusterRoleBinding
 metadata:
-  name: {{ include "dnspod-webhook.fullname" . }}:domain-solver
+  name: {{ include "webhook-dnspod.fullname" . }}:domain-solver
   labels:
-    app: {{ include "dnspod-webhook.name" . }}
-    chart: {{ include "dnspod-webhook.chart" . }}
+    app: {{ include "webhook-dnspod.name" . }}
+    chart: {{ include "webhook-dnspod.chart" . }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: ClusterRole
-  name: {{ include "dnspod-webhook.fullname" . }}:domain-solver
+  name: {{ include "webhook-dnspod.fullname" . }}:domain-solver
 subjects:
   - apiGroup: ""
     kind: ServiceAccount
