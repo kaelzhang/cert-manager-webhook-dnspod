@@ -1,3 +1,9 @@
+config.json
+
+# Ignore the built binary
+_out
+__main__
+
 # Binaries for programs and plugins
 *.exe
 *.exe~
@@ -10,10 +16,6 @@
 
 # Output of the go coverage tool, specifically when used with LiteIDE
 *.out
-
-# Ignore the built binary
-_out
-__main__
 
 /run
 /logs
