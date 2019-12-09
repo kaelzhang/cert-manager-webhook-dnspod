@@ -26,13 +26,13 @@ kubectl --namespace cert-manager create secret generic \
     dnspod-credentials --from-literal=api-token='<DNSPOD_API_TOKEN>'
 ```
 
-### ClusterIssuer
+### Issuer
 
 Create a production issuer. And you could create a staging letsencrypt issuer if necessary.
 
 ```yaml
 apiVersion: cert-manager.io/v1alpha2
-kind: ClusterIssuer
+kind: Issuer
 metadata:
   name: letsencrypt-prod
 spec:

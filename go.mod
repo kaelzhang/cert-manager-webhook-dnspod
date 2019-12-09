@@ -1,19 +1,23 @@
-module github.com/jetstack/cert-manager-webhook-dnspod
+module github.com/kaelzhang/cert-manager-webhook-dnspod
 
 go 1.12
 
 require (
 	github.com/decker502/dnspod-go v0.2.0
-	github.com/dgrijalva/jwt-go v3.2.0+incompatible // indirect
+	github.com/ghodss/yaml v0.0.0-20180820084758-c7ce16629ff4 // indirect
 	github.com/imdario/mergo v0.3.7 // indirect
-	github.com/jetstack/cert-manager v0.8.0-alpha.0
-	golang.org/x/oauth2 v0.0.0-20190402181905-9f3314589c9a // indirect
-	golang.org/x/time v0.0.0-20190308202827-9d24e82272b4 // indirect
-	k8s.io/apiextensions-apiserver v0.0.0-20190413053546-d0acb7a76918
-	k8s.io/apimachinery v0.0.0-20190413052414-40a3f73b0fa2
+	github.com/jetstack/cert-manager v0.12.0
+	github.com/natefinch/lumberjack v2.0.0+incompatible // indirect
+	github.com/philhofer/fwd v1.0.0 // indirect
+	github.com/pquerna/ffjson v0.0.0-20180717144149-af8b230fcd20 // indirect
+	github.com/tinylib/msgp v1.1.0 // indirect
+	github.com/ugorji/go v0.0.0-20171019201919-bdcc60b419d1 // indirect
+	gopkg.in/yaml.v1 v1.0.0-20140924161607-9f9df34309c0 // indirect
+	k8s.io/apiextensions-apiserver v0.0.0-20191114105449-027877536833
+	k8s.io/apimachinery v0.0.0-20191028221656-72ed19daf4bb
 	k8s.io/client-go v11.0.0+incompatible
 )
 
-replace k8s.io/client-go => k8s.io/client-go v0.0.0-20190413052642-108c485f896e
+replace k8s.io/client-go => k8s.io/client-go v0.0.0-20191114101535-6c5935290e33
 
-replace github.com/evanphx/json-patch => github.com/evanphx/json-patch v0.0.0-20190203023257-5858425f7550
+replace k8s.io/component-base => k8s.io/component-base v0.0.0-20191114102325-35a9586014f7

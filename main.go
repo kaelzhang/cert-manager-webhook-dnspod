@@ -13,7 +13,7 @@ import (
 
 	"github.com/jetstack/cert-manager/pkg/acme/webhook/apis/acme/v1alpha1"
 	"github.com/jetstack/cert-manager/pkg/acme/webhook/cmd"
-	certmanager_v1alpha1 "github.com/jetstack/cert-manager/pkg/apis/certmanager/v1alpha1"
+	certmanager_v1alpha2 "github.com/jetstack/cert-manager/pkg/apis/certmanager/v1alpha2"
 	"github.com/jetstack/cert-manager/pkg/issuer/acme/dns/util"
 
 	"github.com/decker502/dnspod-go"
@@ -66,7 +66,7 @@ type customDNSProviderSolver struct {
 // resource and fetch these credentials using a Kubernetes clientset.
 type customDNSProviderConfig struct {
 	APIID             int                                    `json:"apiID"`
-	APITokenSecretRef certmanager_v1alpha1.SecretKeySelector `json:"apiTokenSecretRef"`
+	APITokenSecretRef certmanager_v1alpha2.SecretKeySelector `json:"apiTokenSecretRef"`
 	TTL               *int                                   `json:"ttl"`
 }
 
