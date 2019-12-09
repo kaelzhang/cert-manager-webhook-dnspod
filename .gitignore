@@ -3,6 +3,7 @@ config.json
 # Ignore the built binary
 _out
 __main__
+__debug_bin
 
 # Binaries for programs and plugins
 *.exe

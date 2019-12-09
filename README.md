@@ -129,5 +129,6 @@ Then modify `testdata/my-custom-solver/config.json` to setup the configs.
 Now you can run the test suite with:
 
 ```sh
-TEST_ZONE_NAME=example.com go test .
+# take ost.ai for example
+GROUP_NAME=ost.ai TEST_ZONE_NAME=ost.ai go test .
 ```
