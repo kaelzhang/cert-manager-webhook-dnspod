@@ -6,8 +6,7 @@ This is a webhook solver for [DNSPod](https://www.dnspod.cn).
 
 ## Prerequisites
 
-- [cert-manager](https://github.com/jetstack/cert-manager): >= 0.12.0
-  - [Installing on Kubernetes](https://cert-manager.io/docs/installation/kubernetes/)
+Have [cert-manager](https://github.com/jetstack/cert-manager): >= 0.12.0 [installed](https://cert-manager.io/docs/installation/kubernetes/) within your kubernetes cluster.
 
 ## Installation
 
