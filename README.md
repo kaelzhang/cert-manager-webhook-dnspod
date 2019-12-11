@@ -26,6 +26,38 @@ kubectl --namespace cert-manager create secret generic \
     dnspod-credentials --from-literal=api-token='<DNSPOD_API_TOKEN>'
 ```
 
+### RBAC
+
+```yaml
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: cert-manager-webhook-dnspod:secret-reader
+rules:
+- apiGroups:
+  - ""
+  resources:
+  - "secrets"
+  resourceNames:
+  - "dnspod-credentials"
+  verbs:
+  - "get"
+  - "watch"
+---
+apiVersion: rbac.authorization.k8s.io/v1beta1
+kind: RoleBinding
+metadata:
+  name: cert-manager-webhook-dnspod:secret-reader
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: cert-manager-webhook-dnspod:secret-reader
+subjects:
+  - apiGroup: ""
+    kind: ServiceAccount
+    name: cert-manager-webhook-dnspod
+```
+
 ### Issuer
 
 Create a production issuer. And you could create a staging letsencrypt issuer if necessary.
@@ -124,7 +156,7 @@ wget -O- https://storage.googleapis.com/kubebuilder-tools/kubebuilder-tools-1.14
 mv kubebuilder __main__/hack
 ```
 
-Then rename `testdata/my-custom-solver.example` as `testdata/my-custom-solver` to setup the configs.
+Then rename `testdata/my-custom-solver.example` as `testdata/my-custom-solver` and fulfill the DNSPod appId (`<your-dnspod-api-id>`) and apiToken (`<your-dnspod-api-token-base64>`) to setup the configurations.
 
 Now we could run tests in debug mode with dlv
 
