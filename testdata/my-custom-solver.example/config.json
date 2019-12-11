@@ -1,0 +1,8 @@
+{
+  "apiID": <dnspod-api-id>,
+  "apiTokenSecretRef": {
+    "Name": "dnspod-credentials",
+    "Key": "<dnspod-secret-token>"
+  },
+  "ttl": 600
+}
