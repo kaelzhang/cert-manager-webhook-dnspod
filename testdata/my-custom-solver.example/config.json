@@ -1,5 +1,5 @@
 {
-  "apiID": <dnspod-api-id>,
+  "apiID": <your-dnspod-api-id>,
   "apiTokenSecretRef": {
     "Name": "dnspod-credentials",
     "Key": "<dnspod-secret-token>"

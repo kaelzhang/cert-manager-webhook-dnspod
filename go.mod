@@ -3,8 +3,8 @@ module github.com/kaelzhang/cert-manager-webhook-dnspod
 go 1.13
 
 require (
-	github.com/decker502/dnspod-go v0.2.0
 	github.com/jetstack/cert-manager v0.12.0
+	github.com/kaelzhang/dnspod-go v1.0.0
 
 	k8s.io/apiextensions-apiserver v0.0.0-20191114105449-027877536833
 	k8s.io/apimachinery v0.0.0-20191028221656-72ed19daf4bb

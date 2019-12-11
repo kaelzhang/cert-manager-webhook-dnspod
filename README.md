@@ -124,7 +124,7 @@ wget -O- https://storage.googleapis.com/kubebuilder-tools/kubebuilder-tools-1.14
 mv kubebuilder __main__/hack
 ```
 
-Then modify `testdata/my-custom-solver/config.json` to setup the configs.
+Then rename `testdata/my-custom-solver.example` as `testdata/my-custom-solver` to setup the configs.
 
 Now we could run tests in debug mode with dlv
 
@@ -132,4 +132,12 @@ Now we could run tests in debug mode with dlv
 GROUP_NAME=ost.ai \
 TEST_ZONE_NAME=ost.ai. \
 dlv test . -- -test.v
+```
+
+Or just run tests
+
+```sh
+GROUP_NAME=ost.ai \
+TEST_ZONE_NAME=ost.ai. \
+go test -v
 ```
