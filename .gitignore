@@ -1,4 +1,5 @@
-config.json
+# user custom
+my-custom-solver
 
 # Ignore the built binary
 _out
@@ -11,6 +12,7 @@ __debug_bin
 *.dll
 *.so
 *.dylib
+**/no-track.go
 
 # Test binary, build with `go test -c`
 *.test

@@ -8,19 +8,20 @@
       "name": "Launch Tests",
       "type": "go",
       "request": "launch",
-      "mode": "test",
+      "mode": "auto",
       "program": "${fileDirname}",
       "env": {
         "GROUP_NAME": "ost.ai",
         "TEST_ZONE_NAME": "ost.ai"
       },
+      "trace": "verbose",
       "args": [
         "-test.v",
         "-test.run",
         "TestRunsSuite"
       ],
       "showLog": true,
-      "logOutput": "debugger"
+      // "logOutput": "debugger"
     }
   ]
 }

@@ -126,9 +126,10 @@ mv kubebuilder __main__/hack
 
 Then modify `testdata/my-custom-solver/config.json` to setup the configs.
 
-Now you can run the test suite with:
+Now we could run tests in debug mode with dlv
 
 ```sh
-# take ost.ai for example
-GROUP_NAME=ost.ai TEST_ZONE_NAME=ost.ai go test .
+GROUP_NAME=ost.ai \
+TEST_ZONE_NAME=ost.ai. \
+dlv test . -- -test.v
 ```
