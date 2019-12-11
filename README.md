@@ -139,14 +139,6 @@ spec:
 
 ## Development
 
-All DNS providers **must** run the DNS01 provider conformance testing suite,
-else they will have undetermined behaviour when used with cert-manager.
-
-**It is essential that you configure and run the test suite when creating a
-DNS01 webhook.**
-
-An example Go test file has been provided in [main_test.go]().
-
 Before you can run the test suite, you need to download the test binaries:
 
 ```sh
@@ -155,11 +147,12 @@ wget -O- https://storage.googleapis.com/kubebuilder-tools/kubebuilder-tools-1.14
 mv kubebuilder __main__/hack
 ```
 
-Then rename `testdata/my-custom-solver.example` as `testdata/my-custom-solver` and fulfill the DNSPod appId (`<your-dnspod-api-id>`) and apiToken (`<your-dnspod-api-token-base64>`) to setup the configurations.
+Then rename `testdata/my-custom-solver.example` as `testdata/my-custom-solver` and fulfill the values of DNSPod appId (`<your-dnspod-api-id>`) and apiToken (`<your-dnspod-api-token-base64>`).
 
 Now we could run tests in debug mode with dlv
 
 ```sh
+# You should change GROUP_NAME and TEST_ZONE_NAME to your own ones
 GROUP_NAME=ost.ai \
 TEST_ZONE_NAME=ost.ai. \
 dlv test . -- -test.v

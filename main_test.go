@@ -5,9 +5,6 @@ import (
 	"testing"
 
 	"github.com/jetstack/cert-manager/test/acme/dns"
-
-	// "bytes"
-	// "log"
 )
 
 var (
@@ -16,16 +13,6 @@ var (
 )
 
 func TestRunsSuite(t *testing.T) {
-	// The manifest path should contain a file named config.json that is a
-	// snippet of valid configuration that should be included on the
-	// ChallengeRequest passed as part of the test cases.
-
-	// var buf bytes.Buffer
-	// log.SetOutput(&buf)
-	// defer func () {
-	// 	log.SetOutput(os.Stderr)
-	// }()
-
 	t.Logf("TEST_ZONE_NAME %s", zone)
 	t.Logf("GROUP_NAME %s", group)
 
@@ -37,7 +24,4 @@ func TestRunsSuite(t *testing.T) {
 	)
 
 	fixture.RunConformance(t)
-
-	// t.Log(buf.String())
-	// t.Log("END")
 }
