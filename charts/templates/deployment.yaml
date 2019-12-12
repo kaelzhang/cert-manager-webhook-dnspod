@@ -3,10 +3,7 @@ kind: Deployment
 metadata:
   name: {{ include "webhook-dnspod.fullname" . }}
   labels:
-    app: {{ include "webhook-dnspod.name" . }}
-    chart: {{ include "webhook-dnspod.chart" . }}
-    release: {{ .Release.Name }}
-    heritage: {{ .Release.Service }}
+{{ include "webhook-dnspod.labels" . | indent 4 }}
 spec:
   replicas: {{ .Values.replicaCount }}
   selector:

@@ -4,10 +4,7 @@ kind: ServiceAccount
 metadata:
   name: {{ include "webhook-dnspod.fullname" . }}
   labels:
-    app: {{ include "webhook-dnspod.name" . }}
-    chart: {{ include "webhook-dnspod.chart" . }}
-    release: {{ .Release.Name }}
-    heritage: {{ .Release.Service }}
+{{ include "webhook-dnspod.labels" . | indent 4 }}
 ---
 # Grant the webhook permission to read the ConfigMap containing the Kubernetes
 # apiserver's requestheader-ca-certificate.
@@ -18,10 +15,7 @@ metadata:
   name: {{ include "webhook-dnspod.fullname" . }}:webhook-authentication-reader
   namespace: kube-system
   labels:
-    app: {{ include "webhook-dnspod.name" . }}
-    chart: {{ include "webhook-dnspod.chart" . }}
-    release: {{ .Release.Name }}
-    heritage: {{ .Release.Service }}
+{{ include "webhook-dnspod.labels" . | indent 4 }}
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: Role
@@ -39,10 +33,7 @@ kind: ClusterRoleBinding
 metadata:
   name: {{ include "webhook-dnspod.fullname" . }}:auth-delegator
   labels:
-    app: {{ include "webhook-dnspod.name" . }}
-    chart: {{ include "webhook-dnspod.chart" . }}
-    release: {{ .Release.Name }}
-    heritage: {{ .Release.Service }}
+{{ include "webhook-dnspod.labels" . | indent 4 }}
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: ClusterRole
@@ -59,10 +50,7 @@ kind: ClusterRole
 metadata:
   name: {{ include "webhook-dnspod.fullname" . }}:domain-solver
   labels:
-    app: {{ include "webhook-dnspod.name" . }}
-    chart: {{ include "webhook-dnspod.chart" . }}
-    release: {{ .Release.Name }}
-    heritage: {{ .Release.Service }}
+{{ include "webhook-dnspod.labels" . | indent 4 }}
 rules:
   - apiGroups:
       - {{ .Values.groupName }}
@@ -76,10 +64,7 @@ kind: ClusterRoleBinding
 metadata:
   name: {{ include "webhook-dnspod.fullname" . }}:domain-solver
   labels:
-    app: {{ include "webhook-dnspod.name" . }}
-    chart: {{ include "webhook-dnspod.chart" . }}
-    release: {{ .Release.Name }}
-    heritage: {{ .Release.Service }}
+{{ include "webhook-dnspod.labels" . | indent 4 }}
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: ClusterRole
@@ -89,3 +74,35 @@ subjects:
     kind: ServiceAccount
     name: {{ .Values.certManager.serviceAccountName }}
     namespace: {{ .Values.certManager.namespace }}
+---
+# The missing rbac of the official webhook-example
+apiVersion: rbac.authorization.k8s.io/v1beta1
+kind: ClusterRole
+metadata:
+  name: {{ include "webhook-dnspod.secretReader" . }}
+  labels:
+{{ include "webhook-dnspod.labels" . | indent 4 }}
+rules:
+- apiGroups:
+  - ""
+  resources:
+  - "secrets"
+  resourceNames:
+  - "dnspod-credentials"
+  verbs:
+  - "get"
+  - "watch"
+---
+apiVersion: rbac.authorization.k8s.io/v1beta1
+kind: ClusterRoleBinding
+metadata:
+  name: {{ include "webhook-dnspod.secretReader" . }}
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: {{ include "webhook-dnspod.secretReader" . }}
+subjects:
+  - apiGroup: ""
+    kind: ServiceAccount
+    name: {{ include "webhook-dnspod.fullname" . }}
+    namespace: {{ .Release.Namespace }}

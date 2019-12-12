@@ -46,3 +46,17 @@ Create chart name and version as used by the chart label.
 {{- define "webhook-dnspod.servingCertificate" -}}
 {{ printf "%s-webhook-tls" (include "webhook-dnspod.fullname" .) }}
 {{- end -}}
+
+{{- define "webhook-dnspod.secretReader" -}}
+{{ printf "%s:secret-reader" (include "webhook-dnspod.fullname" .) }}
+{{- end -}}
+
+{{/*
+Common labels
+*/}}
+{{- define "webhook-dnspod.labels" -}}
+app: {{ include "webhook-dnspod.name" . }}
+chart: {{ include "webhook-dnspod.chart" . }}
+release: {{ .Release.Name }}
+heritage: {{ .Release.Service }}
+{{- end -}}

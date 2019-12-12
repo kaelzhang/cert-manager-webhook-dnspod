@@ -7,10 +7,7 @@ metadata:
   name: {{ include "webhook-dnspod.selfSignedIssuer" . }}
   namespace: {{ .Release.Namespace | quote }}
   labels:
-    app: {{ include "webhook-dnspod.name" . }}
-    chart: {{ include "webhook-dnspod.chart" . }}
-    release: {{ .Release.Name }}
-    heritage: {{ .Release.Service }}
+{{ include "webhook-dnspod.labels" . | indent 4 }}
 spec:
   selfSigned: {}
 
@@ -23,10 +20,7 @@ metadata:
   name: {{ include "webhook-dnspod.rootCACertificate" . }}
   namespace: {{ .Release.Namespace | quote }}
   labels:
-    app: {{ include "webhook-dnspod.name" . }}
-    chart: {{ include "webhook-dnspod.chart" . }}
-    release: {{ .Release.Name }}
-    heritage: {{ .Release.Service }}
+{{ include "webhook-dnspod.labels" . | indent 4 }}
 spec:
   secretName: {{ include "webhook-dnspod.rootCACertificate" . }}
   duration: 43800h # 5y
@@ -44,10 +38,7 @@ metadata:
   name: {{ include "webhook-dnspod.rootCAIssuer" . }}
   namespace: {{ .Release.Namespace | quote }}
   labels:
-    app: {{ include "webhook-dnspod.name" . }}
-    chart: {{ include "webhook-dnspod.chart" . }}
-    release: {{ .Release.Name }}
-    heritage: {{ .Release.Service }}
+{{ include "webhook-dnspod.labels" . | indent 4 }}
 spec:
   ca:
     secretName: {{ include "webhook-dnspod.rootCACertificate" . }}
@@ -61,10 +52,7 @@ metadata:
   name: {{ include "webhook-dnspod.servingCertificate" . }}
   namespace: {{ .Release.Namespace | quote }}
   labels:
-    app: {{ include "webhook-dnspod.name" . }}
-    chart: {{ include "webhook-dnspod.chart" . }}
-    release: {{ .Release.Name }}
-    heritage: {{ .Release.Service }}
+{{ include "webhook-dnspod.labels" . | indent 4 }}
 spec:
   secretName: {{ include "webhook-dnspod.servingCertificate" . }}
   duration: 8760h # 1y

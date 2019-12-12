@@ -25,38 +25,6 @@ kubectl --namespace cert-manager create secret generic \
     dnspod-credentials --from-literal=api-token='<DNSPOD_API_TOKEN>'
 ```
 
-### RBAC
-
-```yaml
-apiVersion: rbac.authorization.k8s.io/v1
-kind: Role
-metadata:
-  name: cert-manager-webhook-dnspod:secret-reader
-rules:
-- apiGroups:
-  - ""
-  resources:
-  - "secrets"
-  resourceNames:
-  - "dnspod-credentials"
-  verbs:
-  - "get"
-  - "watch"
----
-apiVersion: rbac.authorization.k8s.io/v1beta1
-kind: RoleBinding
-metadata:
-  name: cert-manager-webhook-dnspod:secret-reader
-roleRef:
-  apiGroup: rbac.authorization.k8s.io
-  kind: Role
-  name: cert-manager-webhook-dnspod:secret-reader
-subjects:
-  - apiGroup: ""
-    kind: ServiceAccount
-    name: cert-manager-webhook-dnspod
-```
-
 ### Issuer
 
 Create a production issuer. And you could create a staging letsencrypt issuer if necessary.
