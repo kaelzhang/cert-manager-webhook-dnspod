@@ -121,15 +121,15 @@ Now we could run tests in debug mode with dlv
 
 ```sh
 # You should change GROUP_NAME and TEST_ZONE_NAME to your own ones
-GROUP_NAME=ost.ai \
-TEST_ZONE_NAME=ost.ai. \
+GROUP_NAME=yourdomain.com \
+TEST_ZONE_NAME=yourdomain.com. \
 dlv test . -- -test.v
 ```
 
 Or just run tests
 
 ```sh
-GROUP_NAME=ost.ai \
-TEST_ZONE_NAME=ost.ai. \
+GROUP_NAME=yourdomain.com \
+TEST_ZONE_NAME=yourdomain. \
 go test -v
 ```
