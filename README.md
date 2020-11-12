@@ -133,3 +133,7 @@ GROUP_NAME=yourdomain.com \
 TEST_ZONE_NAME=yourdomain. \
 go test -v
 ```
+
+## Contribution
+
+This repo is essentially a fork of [jetstack/cert-manager-webhook-example](https://github.com/jetstack/cert-manager-webhook-example), so before you contribute to this repo, you could check the example.
