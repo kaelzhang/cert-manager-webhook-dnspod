@@ -1,5 +1,5 @@
 IMAGE_NAME := "kaelz/cert-manager-webhook-dnspod"
-IMAGE_TAG := "1.1.3"
+IMAGE_TAG := "1.1.4"
 
 OUT := $(shell pwd)/_out
 
