@@ -6,6 +6,9 @@ Features
 - Updated to cert-manager 1.0.4
 - Updated to client-go 0.19.4
 
+Tested on production environment of
+-
+
 This is a webhook solver for [DNSPod](https://www.dnspod.cn).
 
 ## Prerequisites
