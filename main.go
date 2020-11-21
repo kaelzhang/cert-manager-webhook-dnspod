@@ -8,13 +8,13 @@ import (
 	"strings"
 
 	extapi "k8s.io/apiextensions-apiserver/pkg/apis/apiextensions/v1beta1"
-	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+	meta "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/client-go/kubernetes"
 	"k8s.io/client-go/rest"
 
-	"github.com/jetstack/cert-manager/pkg/acme/webhook/apis/acme/v1alpha1"
+	acme "github.com/jetstack/cert-manager/pkg/acme/webhook/apis/acme/v1alpha1"
 	"github.com/jetstack/cert-manager/pkg/acme/webhook/cmd"
-	cmmeta_v1 "github.com/jetstack/cert-manager/pkg/apis/meta/v1"
+	cmmeta "github.com/jetstack/cert-manager/pkg/apis/meta/v1"
 	"github.com/jetstack/cert-manager/pkg/issuer/acme/dns/util"
 
 	"github.com/nrdcg/dnspod-go"
@@ -66,9 +66,9 @@ type customDNSProviderSolver struct {
 // be used by your provider here, you should reference a Kubernetes Secret
 // resource and fetch these credentials using a Kubernetes clientset.
 type customDNSProviderConfig struct {
-	APIID             int                         `json:"apiID"`
-	APITokenSecretRef cmmeta_v1.SecretKeySelector `json:"apiTokenSecretRef"`
-	TTL               *int                        `json:"ttl"`
+	APIID             int                      `json:"apiID"`
+	APITokenSecretRef cmmeta.SecretKeySelector `json:"apiTokenSecretRef"`
+	TTL               *int                     `json:"ttl"`
 }
 
 // Name is used as the name for this DNS solver when referencing it on the ACME
@@ -85,7 +85,7 @@ func (c *customDNSProviderSolver) Name() string {
 // This method should tolerate being called multiple times with the same value.
 // cert-manager itself will later perform a self check to ensure that the
 // solver has correctly configured the DNS provider.
-func (c *customDNSProviderSolver) Present(ch *v1alpha1.ChallengeRequest) error {
+func (c *customDNSProviderSolver) Present(ch *acme.ChallengeRequest) error {
 	cfg, err := loadConfig(ch.Config)
 	if err != nil {
 		return err
@@ -116,7 +116,7 @@ func (c *customDNSProviderSolver) Present(ch *v1alpha1.ChallengeRequest) error {
 // value provided on the ChallengeRequest should be cleaned up.
 // This is in order to facilitate multiple DNS validations for the same domain
 // concurrently.
-func (c *customDNSProviderSolver) CleanUp(ch *v1alpha1.ChallengeRequest) error {
+func (c *customDNSProviderSolver) CleanUp(ch *acme.ChallengeRequest) error {
 	cfg, err := loadConfig(ch.Config)
 	if err != nil {
 		return err
@@ -172,13 +172,13 @@ func (c *customDNSProviderSolver) Initialize(kubeClientConfig *rest.Config, stop
 	return nil
 }
 
-func (c *customDNSProviderSolver) getDNSPod(ch *v1alpha1.ChallengeRequest, cfg customDNSProviderConfig) (*dnspod.Client, error) {
+func (c *customDNSProviderSolver) getDNSPod(ch *acme.ChallengeRequest, cfg customDNSProviderConfig) (*dnspod.Client, error) {
 	apiID := cfg.APIID
 	dnspodClient, ok := c.dnspod[apiID]
 	if !ok {
 		ref := cfg.APITokenSecretRef
 
-		secret, err := c.client.CoreV1().Secrets(ch.ResourceNamespace).Get(context.TODO(), ref.Name, metav1.GetOptions{})
+		secret, err := c.client.CoreV1().Secrets(ch.ResourceNamespace).Get(context.TODO(), ref.Name, meta.GetOptions{})
 		if err != nil {
 			return nil, err
 		}
