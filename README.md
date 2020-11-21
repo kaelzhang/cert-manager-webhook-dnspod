@@ -13,13 +13,9 @@ This is a webhook solver for [DNSPod](https://www.dnspod.cn).
 
 ## Prerequisites
 
-Have [cert-manager](https://github.com/jetstack/cert-manager): >= 0.12.0 [installed](https://cert-manager.io/docs/installation/kubernetes/) within your kubernetes cluster.
+Have [cert-manager](https://github.com/jetstack/cert-manager): >= 1.0.4 [installed](https://cert-manager.io/docs/installation/kubernetes/) within your kubernetes cluster.
 
 ## Installation
-
-```console
-$ helm install cert-manager-webhook-dnspod ./charts
-```
 
 ### Prepare for DNSPod
 
@@ -30,6 +26,13 @@ $ helm install cert-manager-webhook-dnspod ./charts
 ```sh
 kubectl --namespace cert-manager create secret generic \
     dnspod-credentials --from-literal=api-token='<DNSPOD_API_TOKEN>'
+```
+
+### Install webhook
+
+```console
+$ helm install cert-manager-webhook-dnspod ./charts \
+  --namespace cert-manager
 ```
 
 ### Issuer
