@@ -37,8 +37,8 @@ kubectl --namespace cert-manager create secret generic \
 Create a production issuer. And you could create a staging letsencrypt issuer if necessary.
 
 ```yaml
-apiVersion: cert-manager.io/v1alpha2
-kind: Issuer
+apiVersion: cert-manager.io/v1
+kind: ClusterIssuer
 metadata:
   name: letsencrypt-prod
 spec:
@@ -68,7 +68,7 @@ spec:
 ### Certificate
 
 ```yaml
-apiVersion: cert-manager.io/v1alpha2
+apiVersion: cert-manager.io/v1
 kind: Certificate
 metadata:
   # you could replace this name to your own
@@ -112,14 +112,16 @@ spec:
           servicePort: 80
 ```
 
+****
+
+> For contributors
+
 ## Development
 
 Before you can run the test suite, you need to download the test binaries:
 
 ```sh
-mkdir __main__
 wget -O- https://storage.googleapis.com/kubebuilder-tools/kubebuilder-tools-1.14.1-darwin-amd64.tar.gz | tar x -
-mv kubebuilder __main__/hack
 ```
 
 Then rename `testdata/my-custom-solver.example` as `testdata/my-custom-solver` and fulfill the values of DNSPod appId (`<your-dnspod-api-id>`) and apiToken (`<your-dnspod-api-token-base64>`).

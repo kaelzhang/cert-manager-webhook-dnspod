@@ -3,7 +3,7 @@ my-custom-solver
 
 # Ignore the built binary
 _out
-__main__
+kubebuilder
 __debug_bin
 
 # Binaries for programs and plugins
