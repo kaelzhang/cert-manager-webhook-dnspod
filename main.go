@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
 	"os"
@@ -101,7 +102,7 @@ func (c *customDNSProviderSolver) Present(ch *v1alpha1.ChallengeRequest) error {
 	}
 
 	recordAttributes := newTxtRecord(ch.ResolvedZone, ch.ResolvedFQDN, ch.Key, *cfg.TTL)
-	_, _, err = dnspodClient.Domains.CreateRecord(domainID, *recordAttributes)
+	_, _, err = dnspodClient.Records.Create(domainID, *recordAttributes)
 	if err != nil {
 		return fmt.Errorf("dnspod API call failed: %v", err)
 	}
@@ -141,7 +142,7 @@ func (c *customDNSProviderSolver) CleanUp(ch *v1alpha1.ChallengeRequest) error {
 			continue
 		}
 
-		_, err := dnspodClient.Domains.DeleteRecord(domainID, record.ID)
+		_, err := dnspodClient.Records.Delete(domainID, record.ID)
 		if err != nil {
 			return err
 		}
@@ -177,7 +178,7 @@ func (c *customDNSProviderSolver) getDNSPod(ch *v1alpha1.ChallengeRequest, cfg c
 	if !ok {
 		ref := cfg.APITokenSecretRef
 
-		secret, err := c.client.CoreV1().Secrets(ch.ResourceNamespace).Get(ref.Name, metav1.GetOptions{})
+		secret, err := c.client.CoreV1().Secrets(ch.ResourceNamespace).Get(context.TODO(), ref.Name, metav1.GetOptions{})
 		if err != nil {
 			return nil, err
 		}
@@ -256,7 +257,7 @@ func newTxtRecord(zone, fqdn, value string, ttl int) *dnspod.Record {
 
 func findTxtRecords(client *dnspod.Client, domainID, zone, fqdn string) ([]dnspod.Record, error) {
 	recordName := extractRecordName(fqdn, zone)
-	records, _, err := client.Domains.ListRecords(domainID, recordName)
+	records, _, err := client.Records.List(domainID, recordName)
 	if err != nil {
 		return records, fmt.Errorf("dnspod API call has failed: %v", err)
 	}

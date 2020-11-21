@@ -1,4 +1,4 @@
-# user custom
+# user custom for testing
 my-custom-solver
 
 # Ignore the built binary
@@ -74,6 +74,7 @@ old/
 *-old/
 *-notrack/
 no-track/
+no-track.*
 build/
 combo/
 reference/
