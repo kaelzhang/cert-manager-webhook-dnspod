@@ -12,7 +12,6 @@ spec:
   selfSigned: {}
 
 ---
-
 # Generate a CA Certificate used to sign certificates for the webhook
 apiVersion: cert-manager.io/v1
 kind: Certificate
@@ -30,7 +29,6 @@ spec:
   isCA: true
 
 ---
-
 # Create an Issuer that uses the above generated CA certificate to issue certs
 apiVersion: cert-manager.io/v1
 kind: Issuer
@@ -44,7 +42,6 @@ spec:
     secretName: {{ include "webhook-dnspod.rootCACertificate" . }}
 
 ---
-
 # Finally, generate a serving certificate for the webhook to use
 apiVersion: cert-manager.io/v1
 kind: Certificate

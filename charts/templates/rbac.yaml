@@ -5,6 +5,7 @@ metadata:
   name: {{ include "webhook-dnspod.fullname" . }}
   labels:
 {{ include "webhook-dnspod.labels" . | indent 4 }}
+
 ---
 # Grant the webhook permission to read the ConfigMap containing the Kubernetes
 # apiserver's requestheader-ca-certificate.
@@ -25,6 +26,7 @@ subjects:
     kind: ServiceAccount
     name: {{ include "webhook-dnspod.fullname" . }}
     namespace: {{ .Release.Namespace }}
+
 ---
 # apiserver gets the auth-delegator role to delegate auth decisions to
 # the core apiserver
@@ -43,6 +45,7 @@ subjects:
     kind: ServiceAccount
     name: {{ include "webhook-dnspod.fullname" . }}
     namespace: {{ .Release.Namespace }}
+
 ---
 # Grant cert-manager permission to validate using our apiserver
 apiVersion: rbac.authorization.k8s.io/v1
@@ -55,9 +58,10 @@ rules:
   - apiGroups:
       - {{ .Values.groupName }}
     resources:
-      - '*'
+      - "*"
     verbs:
-      - 'create'
+      - "create"
+
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
@@ -74,8 +78,10 @@ subjects:
     kind: ServiceAccount
     name: {{ .Values.certManager.serviceAccountName }}
     namespace: {{ .Values.certManager.namespace }}
+
 ---
-# The missing rbac of the official webhook-example
+# Grant access to `dnspod-credentials` so that
+# cert-manager-webhook-dnspod could get secret ref
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
 metadata:
@@ -92,6 +98,7 @@ rules:
   verbs:
   - "get"
   - "watch"
+
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
@@ -100,6 +107,43 @@ metadata:
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: ClusterRole
+  name: {{ include "webhook-dnspod.secretReader" . }}
+subjects:
+  - apiGroup: ""
+    kind: ServiceAccount
+    name: {{ include "webhook-dnspod.fullname" . }}
+    namespace: {{ .Release.Namespace }}
+
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: {{ include "webhook-dnspod.secretReader" . }}
+  namespace: {{ .Release.Namespace }}
+  labels:
+{{ include "webhook-dnspod.labels" . | indent 4 }}
+rules:
+- apiGroups:
+  - ""
+  resources:
+  - "secrets"
+  resourceNames:
+  - "dnspod-credentials"
+  verbs:
+  - "get"
+  - "watch"
+
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: {{ include "webhook-dnspod.secretReader" . }}
+  namespace: {{ .Release.Namespace }}
+  labels:
+{{ include "webhook-dnspod.labels" . | indent 4 }}
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
   name: {{ include "webhook-dnspod.secretReader" . }}
 subjects:
   - apiGroup: ""
