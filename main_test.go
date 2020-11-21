@@ -5,7 +5,6 @@ import (
 	"testing"
 
 	"github.com/jetstack/cert-manager/test/acme/dns"
-	"github.com/kaelzhang/cert-manager-webhook-dnspod/webhook"
 )
 
 var (
@@ -17,7 +16,7 @@ func TestRunsSuite(t *testing.T) {
 	t.Logf("TEST_ZONE_NAME %s", zone)
 	t.Logf("GROUP_NAME %s", group)
 
-	fixture := dns.NewFixture(webhook.Solver(),
+	fixture := dns.NewFixture(&solver{},
 		dns.SetResolvedZone(zone),
 		dns.SetAllowAmbientCredentials(false),
 		dns.SetManifestPath("testdata/my-custom-solver"),

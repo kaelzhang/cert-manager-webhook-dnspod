@@ -1,11 +1,10 @@
-package webhook
+package main
 
 import (
 	"context"
 	"fmt"
 	"strings"
 
-	"github.com/jetstack/cert-manager/pkg/acme/webhook"
 	acme "github.com/jetstack/cert-manager/pkg/acme/webhook/apis/acme/v1alpha1"
 	"github.com/jetstack/cert-manager/pkg/issuer/acme/dns/util"
 	"github.com/nrdcg/dnspod-go"
@@ -14,11 +13,6 @@ import (
 	"k8s.io/client-go/rest"
 	"k8s.io/klog"
 )
-
-// Solver creates a new solver
-func Solver() webhook.Solver {
-	return &solver{}
-}
 
 // solver implements the provider-specific logic needed to
 // 'present' an ACME challenge TXT record for your own DNS provider.

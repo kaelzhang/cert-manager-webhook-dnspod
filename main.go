@@ -4,7 +4,6 @@ import (
 	"os"
 
 	"github.com/jetstack/cert-manager/pkg/acme/webhook/cmd"
-	"github.com/kaelzhang/cert-manager-webhook-dnspod/webhook"
 	"k8s.io/klog"
 )
 
@@ -20,5 +19,5 @@ func main() {
 	// You can register multiple DNS provider implementations with a single
 	// webhook, where the Name() method will be used to disambiguate between
 	// the different implementations.
-	cmd.RunWebhookServer(groupName, webhook.Solver())
+	cmd.RunWebhookServer(groupName, &solver{})
 }

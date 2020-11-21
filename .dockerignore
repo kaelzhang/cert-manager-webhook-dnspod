@@ -1,4 +1,4 @@
 *
-!webhook
 !go.*
 !*.go
+main_test.go
