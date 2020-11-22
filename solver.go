@@ -69,7 +69,9 @@ func (c *solver) Present(ch *acme.ChallengeRequest) error {
 
 	domainID, err := getDomainID(client, ch.ResolvedZone)
 	if err != nil {
+
 		klog.Errorf("Present: fails to get domain id for resolved zone (%v): %v", ch.ResolvedZone, err)
+		fmt.Printf("Present: fails to get domain id for resolved zone (%v): %v", ch.ResolvedZone, err)
 
 		return err
 	}
@@ -78,6 +80,7 @@ func (c *solver) Present(ch *acme.ChallengeRequest) error {
 	_, _, err = client.Records.Create(domainID, *recordAttributes)
 	if err != nil {
 		klog.Errorf("Present: fails to add txt record: %v", err)
+		fmt.Printf("Present: fails to add txt record: %v", err)
 
 		return fmt.Errorf("dnspod API call failed: %v", err)
 	}
