@@ -62,17 +62,23 @@ func (c *solver) Initialize(kubeClientConfig *rest.Config, stopCh <-chan struct{
 func (c *solver) Present(ch *acme.ChallengeRequest) error {
 	client, cfg, err := c.dnspodClient(ch)
 	if err != nil {
+		klog.Errorf("Present: fails to initialize dnspod client from challenge: %v", err)
+
 		return err
 	}
 
 	domainID, err := getDomainID(client, ch.ResolvedZone)
 	if err != nil {
+		klog.Errorf("Present: fails to get domain id for resolved zone (%v): %v", ch.ResolvedZone, err)
+
 		return err
 	}
 
 	recordAttributes := newTxtRecord(ch.ResolvedZone, ch.ResolvedFQDN, ch.Key, *cfg.TTL)
 	_, _, err = client.Records.Create(domainID, *recordAttributes)
 	if err != nil {
+		klog.Errorf("Present: fails to add txt record: %v", err)
+
 		return fmt.Errorf("dnspod API call failed: %v", err)
 	}
 
@@ -89,16 +95,22 @@ func (c *solver) CleanUp(ch *acme.ChallengeRequest) error {
 
 	client, _, err := c.dnspodClient(ch)
 	if err != nil {
+		klog.Errorf("CleanUp: fails to initialize dnspod client from challenge: %v", err)
+
 		return err
 	}
 
 	domainID, err := getDomainID(client, ch.ResolvedZone)
 	if err != nil {
+		klog.Errorf("CleanUp: fails to get domain id for resolved zone `%v`: %v", ch.ResolvedZone, err)
+
 		return err
 	}
 
 	records, err := findTxtRecords(client, domainID, ch.ResolvedZone, ch.ResolvedFQDN)
 	if err != nil && !strings.Contains(err.Error(), "No records") {
+		klog.Errorf("CleanUp: fails to find txt record (%v, %v, %v): %v", domainID, ch.ResolvedZone, ch.ResolvedFQDN, err)
+
 		return err
 	}
 
@@ -109,6 +121,8 @@ func (c *solver) CleanUp(ch *acme.ChallengeRequest) error {
 
 		_, err := client.Records.Delete(domainID, record.ID)
 		if err != nil {
+			klog.Errorf("CleanUp: fails to delete txt record (%v, %v): %v", domainID, record.ID, err)
+
 			return err
 		}
 	}

@@ -2,14 +2,14 @@
 
 > A fork of [qqshfox/cert-manager-webhook-dnspod](https://github.com/qqshfox/cert-manager-webhook-dnspod)
 
+This is a webhook solver for Tencent [DNSPod](https://www.dnspod.cn).
+
 Features
 - Updated to cert-manager 1.0.4
 - Updated to client-go 0.19.4
 
 Tested on production environment of
--
-
-This is a webhook solver for [DNSPod](https://www.dnspod.cn).
+- Kubernetes 1.18.3
 
 ## Prerequisites
 
@@ -25,13 +25,13 @@ Have [cert-manager](https://github.com/jetstack/cert-manager): >= 1.0.4 [install
 
 ```sh
 kubectl --namespace cert-manager create secret generic \
-    dnspod-credentials --from-literal=api-token='<DNSPOD_API_TOKEN>'
+  dnspod-credentials --from-literal=api-token='<DNSPOD_API_TOKEN>'
 ```
 
 ### Install webhook
 
-```console
-$ helm install cert-manager-webhook-dnspod ./charts \
+```
+helm install cert-manager-webhook-dnspod ./charts \
   --namespace cert-manager
 ```
 
@@ -74,9 +74,11 @@ spec:
 apiVersion: cert-manager.io/v1
 kind: Certificate
 metadata:
-  # you could replace this name to your own
+  # You could replace this name to your own
+  # Pick any name as you wish
   name: wildcard-yourdomain-com # for *.yourdomain.com
 spec:
+  # Pick any name as you wish
   secretName: wildcard-yourdomain-com-tls
   renewBefore: 240h
   dnsNames:

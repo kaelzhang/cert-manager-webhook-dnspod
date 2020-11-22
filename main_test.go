@@ -8,7 +8,9 @@ import (
 )
 
 var (
-	zone  = os.Getenv("TEST_ZONE_NAME")
+	// example.com.
+	zone = os.Getenv("TEST_ZONE_NAME")
+	// www.example.com
 	group = os.Getenv("GROUP_NAME")
 )
 

@@ -15,6 +15,7 @@ certManager:
 image:
   repository: kaelz/cert-manager-webhook-dnspod
   pullPolicy: IfNotPresent
+  tag: 1.2.0
 
 nameOverride: ""
 fullnameOverride: ""
