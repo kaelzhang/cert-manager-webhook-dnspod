@@ -9,10 +9,10 @@
       "type": "go",
       "request": "launch",
       "mode": "auto",
-      "program": "${fileDirname}",
+      "program": "${workspaceRoot}",
       "env": {
         "GROUP_NAME": "ost.ai",
-        "TEST_ZONE_NAME": "ost.ai"
+        "TEST_ZONE_NAME": "ost.ai."
       },
       "trace": "verbose",
       "args": [

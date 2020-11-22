@@ -28,11 +28,18 @@ kubectl --namespace cert-manager create secret generic \
   dnspod-credentials --from-literal=api-token='<DNSPOD_API_TOKEN>'
 ```
 
-### Install webhook
+### Install `cert-manager-webhook-dnspod`
+
+You need to create a `values.yaml` file to override `groupName` of the default value of the helm chart.
+
+```yaml
+groupName: <your group name>
+```
 
 ```
 helm install cert-manager-webhook-dnspod ./charts \
-  --namespace cert-manager
+  --namespace cert-manager \
+  -f values.yaml
 ```
 
 ### Issuer
@@ -59,7 +66,7 @@ spec:
     solvers:
     - dns01:
         webhook:
-          groupName: <your group>
+          groupName: <your group name>
           solverName: dnspod
           config:
             apiID: <your dnspod api id>

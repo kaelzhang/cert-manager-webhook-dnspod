@@ -60,6 +60,8 @@ func (c *solver) Initialize(kubeClientConfig *rest.Config, stopCh <-chan struct{
 // cert-manager itself will later perform a self check to ensure that the
 // solver has correctly configured the DNS provider.
 func (c *solver) Present(ch *acme.ChallengeRequest) error {
+	return fmt.Errorf("just for debug Present: ch: %v", ch)
+
 	client, cfg, err := c.dnspodClient(ch)
 	if err != nil {
 		klog.Errorf("Present: fails to initialize dnspod client from challenge: %v", err)
@@ -71,16 +73,17 @@ func (c *solver) Present(ch *acme.ChallengeRequest) error {
 	if err != nil {
 
 		klog.Errorf("Present: fails to get domain id for resolved zone (%v): %v", ch.ResolvedZone, err)
-		fmt.Printf("Present: fails to get domain id for resolved zone (%v): %v", ch.ResolvedZone, err)
 
 		return err
 	}
 
 	recordAttributes := newTxtRecord(ch.ResolvedZone, ch.ResolvedFQDN, ch.Key, *cfg.TTL)
+
+	klog.Errorf("Present: recordAttributes: %v, %v", recordAttributes, ch.Key)
+
 	_, _, err = client.Records.Create(domainID, *recordAttributes)
 	if err != nil {
 		klog.Errorf("Present: fails to add txt record: %v", err)
-		fmt.Printf("Present: fails to add txt record: %v", err)
 
 		return fmt.Errorf("dnspod API call failed: %v", err)
 	}
@@ -95,6 +98,7 @@ func (c *solver) Present(ch *acme.ChallengeRequest) error {
 // This is in order to facilitate multiple DNS validations for the same domain
 // concurrently.
 func (c *solver) CleanUp(ch *acme.ChallengeRequest) error {
+	return fmt.Errorf("just for debug CleanUp: ch: %v", ch)
 
 	client, _, err := c.dnspodClient(ch)
 	if err != nil {
