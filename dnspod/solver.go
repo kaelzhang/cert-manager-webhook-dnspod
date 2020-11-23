@@ -59,20 +59,15 @@ func (c *Solver) Initialize(kubeClientConfig *rest.Config, stopCh <-chan struct{
 // cert-manager itself will later perform a self check to ensure that the
 // solver has correctly configured the DNS provider.
 func (c *Solver) Present(ch *acme.ChallengeRequest) error {
-	// return fmt.Errorf("just for debug Present: ch: %v", ch)
-
 	client, cfg, err := c.dnspodClient(ch)
 	if err != nil {
 		klog.Errorf("Present: fails to initialize dnspod client from challenge: %v", err)
-
 		return err
 	}
 
 	domainID, err := getDomainID(client, ch.ResolvedZone)
 	if err != nil {
-
 		klog.Errorf("Present: fails to get domain id for resolved zone (%v): %v", ch.ResolvedZone, err)
-
 		return err
 	}
 
@@ -97,26 +92,21 @@ func (c *Solver) Present(ch *acme.ChallengeRequest) error {
 // This is in order to facilitate multiple DNS validations for the same domain
 // concurrently.
 func (c *Solver) CleanUp(ch *acme.ChallengeRequest) error {
-	// return fmt.Errorf("just for debug CleanUp: ch: %v", ch)
-
 	client, _, err := c.dnspodClient(ch)
 	if err != nil {
 		klog.Errorf("CleanUp: fails to initialize dnspod client from challenge: %v", err)
-
 		return err
 	}
 
 	domainID, err := getDomainID(client, ch.ResolvedZone)
 	if err != nil {
 		klog.Errorf("CleanUp: fails to get domain id for resolved zone `%v`: %v", ch.ResolvedZone, err)
-
 		return err
 	}
 
 	records, err := findTxtRecords(client, domainID, ch.ResolvedZone, ch.ResolvedFQDN)
 	if err != nil && !strings.Contains(err.Error(), "No records") {
 		klog.Errorf("CleanUp: fails to find txt record (%v, %v, %v): %v", domainID, ch.ResolvedZone, ch.ResolvedFQDN, err)
-
 		return err
 	}
 
@@ -128,7 +118,6 @@ func (c *Solver) CleanUp(ch *acme.ChallengeRequest) error {
 		_, err := client.Records.Delete(domainID, record.ID)
 		if err != nil {
 			klog.Errorf("CleanUp: fails to delete txt record (%v, %v): %v", domainID, record.ID, err)
-
 			return err
 		}
 	}
