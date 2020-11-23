@@ -80,6 +80,8 @@ subjects:
     namespace: {{ .Values.certManager.namespace }}
 
 ---
+# The missing part of cert-manager-webhook-example:
+
 # Grant access to `dnspod-credentials` so that
 # cert-manager-webhook-dnspod could get secret ref
 apiVersion: rbac.authorization.k8s.io/v1

@@ -1,4 +1,4 @@
-package main
+package dnspod
 
 import (
 	"context"
@@ -6,19 +6,18 @@ import (
 	"strings"
 
 	acme "github.com/jetstack/cert-manager/pkg/acme/webhook/apis/acme/v1alpha1"
-	"github.com/jetstack/cert-manager/pkg/issuer/acme/dns/util"
 	"github.com/nrdcg/dnspod-go"
 	meta "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/client-go/kubernetes"
 	"k8s.io/client-go/rest"
-	"k8s.io/klog"
+	klog "k8s.io/klog/v2"
 )
 
-// solver implements the provider-specific logic needed to
+// Solver implements the provider-specific logic needed to
 // 'present' an ACME challenge TXT record for your own DNS provider.
 // To do so, it must implement the `github.com/jetstack/cert-manager/pkg/acme/webhook.Solver`
 // interface.
-type solver struct {
+type Solver struct {
 	client *kubernetes.Clientset
 
 	dnspod map[int]*dnspod.Client
@@ -29,7 +28,7 @@ type solver struct {
 // This should be unique **within the group name**, i.e. you can have two
 // solvers configured with the same Name() **so long as they do not co-exist
 // within a single webhook deployment**.
-func (c *solver) Name() string {
+func (c *Solver) Name() string {
 	return "dnspod"
 }
 
@@ -42,7 +41,7 @@ func (c *solver) Name() string {
 // provider accounts.
 // The stopCh can be used to handle early termination of the webhook, in cases
 // where a SIGTERM or similar signal is sent to the webhook process.
-func (c *solver) Initialize(kubeClientConfig *rest.Config, stopCh <-chan struct{}) error {
+func (c *Solver) Initialize(kubeClientConfig *rest.Config, stopCh <-chan struct{}) error {
 	cl, err := kubernetes.NewForConfig(kubeClientConfig)
 	if err != nil {
 		return err
@@ -59,8 +58,8 @@ func (c *solver) Initialize(kubeClientConfig *rest.Config, stopCh <-chan struct{
 // This method should tolerate being called multiple times with the same value.
 // cert-manager itself will later perform a self check to ensure that the
 // solver has correctly configured the DNS provider.
-func (c *solver) Present(ch *acme.ChallengeRequest) error {
-	return fmt.Errorf("just for debug Present: ch: %v", ch)
+func (c *Solver) Present(ch *acme.ChallengeRequest) error {
+	// return fmt.Errorf("just for debug Present: ch: %v", ch)
 
 	client, cfg, err := c.dnspodClient(ch)
 	if err != nil {
@@ -97,8 +96,8 @@ func (c *solver) Present(ch *acme.ChallengeRequest) error {
 // value provided on the ChallengeRequest should be cleaned up.
 // This is in order to facilitate multiple DNS validations for the same domain
 // concurrently.
-func (c *solver) CleanUp(ch *acme.ChallengeRequest) error {
-	return fmt.Errorf("just for debug CleanUp: ch: %v", ch)
+func (c *Solver) CleanUp(ch *acme.ChallengeRequest) error {
+	// return fmt.Errorf("just for debug CleanUp: ch: %v", ch)
 
 	client, _, err := c.dnspodClient(ch)
 	if err != nil {
@@ -137,7 +136,7 @@ func (c *solver) CleanUp(ch *acme.ChallengeRequest) error {
 	return nil
 }
 
-func (c *solver) dnspodClient(ch *acme.ChallengeRequest) (*dnspod.Client, config, error) {
+func (c *Solver) dnspodClient(ch *acme.ChallengeRequest) (*dnspod.Client, config, error) {
 	cfg, err := loadConfig(ch.Config)
 
 	if err != nil {
@@ -174,64 +173,4 @@ func (c *solver) dnspodClient(ch *acme.ChallengeRequest) (*dnspod.Client, config
 	c.dnspod[apiID] = client
 
 	return client, cfg, nil
-}
-
-func getDomainID(client *dnspod.Client, zone string) (string, error) {
-	domains, _, err := client.Domains.List()
-	if err != nil {
-		return "", fmt.Errorf("dnspod API call failed: %v", err)
-	}
-
-	authZone, err := util.FindZoneByFqdn(zone, util.RecursiveNameservers)
-	if err != nil {
-		return "", err
-	}
-
-	var hostedDomain dnspod.Domain
-	for _, domain := range domains {
-		if domain.Name == util.UnFqdn(authZone) {
-			hostedDomain = domain
-			break
-		}
-	}
-
-	hostedDomainID, err := hostedDomain.ID.Int64()
-	if err != nil {
-		return "", err
-	}
-	if hostedDomainID == 0 {
-		return "", fmt.Errorf("Zone %s not found in dnspod for zone %s", authZone, zone)
-	}
-
-	return fmt.Sprintf("%d", hostedDomainID), nil
-}
-
-func newTxtRecord(zone, fqdn, value string, ttl int) *dnspod.Record {
-	name := extractRecordName(fqdn, zone)
-
-	return &dnspod.Record{
-		Type:  "TXT",
-		Name:  name,
-		Value: value,
-		Line:  "默认",
-		TTL:   fmt.Sprintf("%d", ttl),
-	}
-}
-
-func findTxtRecords(client *dnspod.Client, domainID, zone, fqdn string) ([]dnspod.Record, error) {
-	recordName := extractRecordName(fqdn, zone)
-	records, _, err := client.Records.List(domainID, recordName)
-	if err != nil {
-		return records, fmt.Errorf("dnspod API call has failed: %v", err)
-	}
-
-	return records, nil
-}
-
-func extractRecordName(fqdn, zone string) string {
-	if idx := strings.Index(fqdn, "."+zone); idx != -1 {
-		return fqdn[:idx]
-	}
-
-	return util.UnFqdn(fqdn)
 }

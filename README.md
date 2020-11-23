@@ -1,12 +1,11 @@
 # Cert-Manager ACME webhook for DNSPod
 
-> A fork of [qqshfox/cert-manager-webhook-dnspod](https://github.com/qqshfox/cert-manager-webhook-dnspod)
-
-This is a webhook solver for Tencent [DNSPod](https://www.dnspod.cn).
+This is a webhook solver for Tencent [DNSPod](https://www.dnspod.cn) and it is a **permanent** fork of [qqshfox/cert-manager-webhook-dnspod](https://github.com/qqshfox/cert-manager-webhook-dnspod) which is lack of maintainence.
 
 Features
 - Updated to cert-manager 1.0.4
 - Updated to client-go 0.19.4
+- No hardcoding in helm chart
 
 Tested on production environment of
 - Kubernetes 1.18.3
@@ -30,9 +29,10 @@ kubectl --namespace cert-manager create secret generic \
 
 ### Install `cert-manager-webhook-dnspod`
 
-You need to create a `values.yaml` file to override `groupName` of the default value of the helm chart.
+You need to create a `values.yaml` file to override the default value of `groupName` for the helm chart.
 
 ```yaml
+# The `groupName` here should be same as the value in cluster issuer below
 groupName: <your group name>
 ```
 
@@ -77,27 +77,11 @@ spec:
 
 ### Certificate
 
-```yaml
-apiVersion: cert-manager.io/v1
-kind: Certificate
-metadata:
-  # You could replace this name to your own
-  # Pick any name as you wish
-  name: wildcard-yourdomain-com # for *.yourdomain.com
-spec:
-  # Pick any name as you wish
-  secretName: wildcard-yourdomain-com-tls
-  renewBefore: 240h
-  dnsNames:
-    - '*.yourdomain.com'
-  issuerRef:
-    name: letsencrypt-prod
-    kind: ClusterIssuer
-```
+#### Use Ingress to create the Certificate resource (Recommended)
 
-### Ingress
+A common use-case for cert-manager is requesting TLS signed certificates to secure your ingress resources.
 
-A common use-case for cert-manager is requesting TLS signed certificates to secure your ingress resources. This can be done by simply adding annotations to your Ingress resources and cert-manager will facilitate creating the Certificate resource for you. A small sub-component of cert-manager, ingress-shim, is responsible for this.
+This can be done by simply adding annotations to your Ingress resources and cert-manager will facilitate creating the Certificate resource for you without your concern. A small sub-component of cert-manager, ingress-shim, is responsible for this.
 
 For details, see [here](https://cert-manager.io/docs/usage/ingress/)
 
@@ -122,6 +106,29 @@ spec:
         backend:
           serviceName: backend-service
           servicePort: 80
+```
+
+#### Define the Certificate resource explicitly
+
+If you don't use Ingress, you could define the certificate resource your own
+
+```yaml
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  # You could replace this name to your own
+  # Pick any name as you wish
+  name: wildcard-yourdomain-com # for *.yourdomain.com
+spec:
+  # Pick any name as you wish
+  secretName: wildcard-yourdomain-com-tls
+  renewBefore: 240h
+  dnsNames:
+    - '*.yourdomain.com'
+  issuerRef:
+    # The cluster issuer defined above
+    name: letsencrypt-prod
+    kind: ClusterIssuer
 ```
 
 ****
@@ -151,10 +158,6 @@ Or just run tests
 
 ```sh
 GROUP_NAME=yourdomain.com \
-TEST_ZONE_NAME=yourdomain. \
+TEST_ZONE_NAME=yourdomain.com. \
 go test -v
 ```
-
-## Contribution
-
-This repo is essentially a fork of [jetstack/cert-manager-webhook-example](https://github.com/jetstack/cert-manager-webhook-example), so before you contribute to this repo, you could check the example.

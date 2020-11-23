@@ -1,11 +1,7 @@
-package main
+package dnspod
 
 import (
-	"encoding/json"
-	"fmt"
-
 	api "github.com/jetstack/cert-manager/pkg/apis/meta/v1"
-	extapi "k8s.io/apiextensions-apiserver/pkg/apis/apiextensions/v1beta1"
 )
 
 const (
@@ -30,20 +26,4 @@ type config struct {
 	APIID             int                   `json:"apiID"`
 	APITokenSecretRef api.SecretKeySelector `json:"apiTokenSecretRef"`
 	TTL               *int                  `json:"ttl"`
-}
-
-// loadConfig is a small helper function that decodes JSON configuration into
-// the typed config struct.
-func loadConfig(cfgJSON *extapi.JSON) (config, error) {
-	ttl := defaultTTL
-	cfg := config{TTL: &ttl}
-	// handle the 'base case' where no configuration has been provided
-	if cfgJSON == nil {
-		return cfg, nil
-	}
-	if err := json.Unmarshal(cfgJSON.Raw, &cfg); err != nil {
-		return cfg, fmt.Errorf("error decoding solver config: %v", err)
-	}
-
-	return cfg, nil
 }

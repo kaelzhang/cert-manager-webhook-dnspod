@@ -4,14 +4,14 @@ import (
 	"os"
 
 	"github.com/jetstack/cert-manager/pkg/acme/webhook/cmd"
-	"k8s.io/klog"
+	"github.com/kaelzhang/cert-manager-webhook-dnspod/dnspod"
 )
 
 func main() {
 	groupName := os.Getenv("GROUP_NAME")
 
 	if groupName == "" {
-		klog.Fatal("GROUP_NAME must be specified")
+		panic("GROUP_NAME must be specified")
 	}
 
 	// This will register our custom DNS provider with the webhook serving
@@ -19,5 +19,5 @@ func main() {
 	// You can register multiple DNS provider implementations with a single
 	// webhook, where the Name() method will be used to disambiguate between
 	// the different implementations.
-	cmd.RunWebhookServer(groupName, &solver{})
+	cmd.RunWebhookServer(groupName, &dnspod.Solver{})
 }
