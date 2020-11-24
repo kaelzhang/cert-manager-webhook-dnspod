@@ -12,6 +12,8 @@ certManager:
   namespace: cert-manager
   serviceAccountName: cert-manager
 
+replicaCount: 1
+
 image:
   repository: kaelz/cert-manager-webhook-dnspod
   pullPolicy: IfNotPresent

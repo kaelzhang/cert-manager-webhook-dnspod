@@ -1,6 +1,8 @@
 # Cert-Manager ACME webhook for DNSPod
 
-This is a webhook solver for Tencent [DNSPod](https://www.dnspod.cn) and it is a **permanent** fork of [qqshfox/cert-manager-webhook-dnspod](https://github.com/qqshfox/cert-manager-webhook-dnspod) which is lack of maintainence.
+Cert-manager webhook for DNSPod is a ACME webhook for [cert-manager](https://cert-manager.io) allowing users to use [DNSPod](https://www.dnspod.cn) for DNS01 challenge.
+
+This is a **permanent** fork of [qqshfox/cert-manager-webhook-dnspod](https://github.com/qqshfox/cert-manager-webhook-dnspod) which is lack of maintainence.
 
 Features
 - Updated to cert-manager 1.0.4
@@ -12,15 +14,17 @@ Tested on production environment of
 
 ## Prerequisites
 
-Have [cert-manager](https://github.com/jetstack/cert-manager): >= 1.0.4 [installed](https://cert-manager.io/docs/installation/kubernetes/) within your kubernetes cluster.
+- A DNSPod [APP ID and API Token]((https://support.dnspod.cn/Kb/showarticle/tsid/227/))
+- A valid domain configured on DNSPod
+- A Kubernetes cluster (v1.18+ recommended)
+- Have [cert-manager](https://github.com/jetstack/cert-manager): >= 1.0.4 [installed](https://cert-manager.io/docs/installation/kubernetes/) within your kubernetes cluster.
+- [Helm 3 installed](https://helm.sh/docs/intro/install/) on your local computer
 
 ## Installation
 
 ### Prepare for DNSPod
 
-- Generate API ID and API Token from DNSPod (https://support.dnspod.cn/Kb/showarticle/tsid/227/)
-
-- Create secret to store the API Token
+Create secret to store the API Token
 
 ```sh
 kubectl --namespace cert-manager create secret generic \
@@ -28,6 +32,12 @@ kubectl --namespace cert-manager create secret generic \
 ```
 
 ### Install `cert-manager-webhook-dnspod`
+
+Clone this repository:
+
+```
+git clone https://github.com/kaelzhang/cert-manager-webhook-dnspod.git
+```
 
 You need to create a `values.yaml` file to override the default value of `groupName` for the helm chart.
 
@@ -44,7 +54,9 @@ helm install cert-manager-webhook-dnspod ./charts \
 
 ### Issuer
 
-Create a production issuer. And you could create a staging letsencrypt issuer if necessary.
+Create a production issuer (And you could create a staging letsencrypt issuer instead if necessary)
+
+Create a `cluster-issuer.yaml` file with the following content:
 
 ```yaml
 apiVersion: cert-manager.io/v1
@@ -75,6 +87,12 @@ spec:
               name: dnspod-credentials
 ```
 
+And run:
+
+```
+kubectl create -f cluster-issuer.yaml
+```
+
 ### Certificate
 
 #### Use Ingress to create the Certificate resource (Recommended)
@@ -84,6 +102,8 @@ A common use-case for cert-manager is requesting TLS signed certificates to secu
 This can be done by simply adding annotations to your Ingress resources and cert-manager will facilitate creating the Certificate resource for you without your concern. A small sub-component of cert-manager, ingress-shim, is responsible for this.
 
 For details, see [here](https://cert-manager.io/docs/usage/ingress/)
+
+Create a `ingress.yaml` file with the following content:
 
 ```yaml
 apiVersion: extensions/v1beta1
@@ -96,10 +116,10 @@ metadata:
 spec:
   tls:
   - hosts:
-    - '*.yourdomain.com'
-    secretName: wildcard-yourdomain-com-tls
+    - 'example.com'
+    secretName: example-com-tls
   rules:
-  - host: demo.yourdomain.com
+  - host: example.com
     http:
       paths:
       - path: /
@@ -108,9 +128,17 @@ spec:
           servicePort: 80
 ```
 
-#### Define the Certificate resource explicitly
+And run:
+
+```
+kubectl create -f ingress.yaml
+```
+
+#### Define the Certificate resource explicitly (Alternative)
 
 If you don't use Ingress, you could define the certificate resource your own
+
+Create a `certificate.yaml`:
 
 ```yaml
 apiVersion: cert-manager.io/v1
@@ -118,17 +146,34 @@ kind: Certificate
 metadata:
   # You could replace this name to your own
   # Pick any name as you wish
-  name: wildcard-yourdomain-com # for *.yourdomain.com
+  name: example-com # for example.com
 spec:
   # Pick any name as you wish
-  secretName: wildcard-yourdomain-com-tls
+  secretName: example-com-tls
   renewBefore: 240h
   dnsNames:
-    - '*.yourdomain.com'
+    - 'example.com'
   issuerRef:
     # The cluster issuer defined above
     name: letsencrypt-prod
     kind: ClusterIssuer
+```
+
+And run:
+
+```
+kubectl create -f certificate.yaml
+```
+
+### Check the result:
+
+If the certificate is ready, you could see the following result:
+
+```
+$ kubectl get certificate
+
+NAME          READY  SECRET           AGE
+example-com   True   example-com-tls  2m1s
 ```
 
 ****
