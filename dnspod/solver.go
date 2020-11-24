@@ -32,27 +32,6 @@ func (c *Solver) Name() string {
 	return "dnspod"
 }
 
-// Initialize will be called when the webhook first starts.
-// This method can be used to instantiate the webhook, i.e. initialising
-// connections or warming up caches.
-// Typically, the kubeClientConfig parameter is used to build a Kubernetes
-// client that can be used to fetch resources from the Kubernetes API, e.g.
-// Secret resources containing credentials used to authenticate with DNS
-// provider accounts.
-// The stopCh can be used to handle early termination of the webhook, in cases
-// where a SIGTERM or similar signal is sent to the webhook process.
-func (c *Solver) Initialize(kubeClientConfig *rest.Config, stopCh <-chan struct{}) error {
-	cl, err := kubernetes.NewForConfig(kubeClientConfig)
-	if err != nil {
-		return err
-	}
-	c.client = cl
-
-	c.dnspod = make(map[int]*dnspod.Client)
-
-	return nil
-}
-
 // Present is responsible for actually presenting the DNS record with the
 // DNS provider.
 // This method should tolerate being called multiple times with the same value.
@@ -121,6 +100,27 @@ func (c *Solver) CleanUp(ch *acme.ChallengeRequest) error {
 			return err
 		}
 	}
+
+	return nil
+}
+
+// Initialize will be called when the webhook first starts.
+// This method can be used to instantiate the webhook, i.e. initialising
+// connections or warming up caches.
+// Typically, the kubeClientConfig parameter is used to build a Kubernetes
+// client that can be used to fetch resources from the Kubernetes API, e.g.
+// Secret resources containing credentials used to authenticate with DNS
+// provider accounts.
+// The stopCh can be used to handle early termination of the webhook, in cases
+// where a SIGTERM or similar signal is sent to the webhook process.
+func (c *Solver) Initialize(kubeClientConfig *rest.Config, stopCh <-chan struct{}) error {
+	cl, err := kubernetes.NewForConfig(kubeClientConfig)
+	if err != nil {
+		return err
+	}
+	c.client = cl
+
+	c.dnspod = make(map[int]*dnspod.Client)
 
 	return nil
 }
