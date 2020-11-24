@@ -14,7 +14,7 @@ Tested on production environment of
 
 ## Prerequisites
 
-- A DNSPod [APP ID and API Token]((https://support.dnspod.cn/Kb/showarticle/tsid/227/))
+- A DNSPod [APP ID and API Token](https://support.dnspod.cn/Kb/showarticle/tsid/227/)
 - A valid domain configured on DNSPod
 - A Kubernetes cluster (v1.18+ recommended)
 - Have [cert-manager](https://github.com/jetstack/cert-manager): >= 1.0.4 [installed](https://cert-manager.io/docs/installation/kubernetes/) within your kubernetes cluster.
