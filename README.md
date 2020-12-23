@@ -5,7 +5,7 @@ Cert-manager webhook for DNSPod is a ACME webhook for [cert-manager](https://cer
 This is a **permanent** fork of [qqshfox/cert-manager-webhook-dnspod](https://github.com/qqshfox/cert-manager-webhook-dnspod) which is lack of maintainence.
 
 Features
-- Updated to cert-manager 1.0.4
+- Updated to cert-manager 1.1.0
 - Updated to client-go 0.19.4
 - No hardcoding in helm chart
 
@@ -17,7 +17,7 @@ Tested on production environment of
 - A DNSPod [APP ID and API Token](https://support.dnspod.cn/Kb/showarticle/tsid/227/)
 - A valid domain configured on DNSPod
 - A Kubernetes cluster (v1.18+ recommended)
-- Have [cert-manager](https://github.com/jetstack/cert-manager): >= 1.0.4 [installed](https://cert-manager.io/docs/installation/kubernetes/) within your kubernetes cluster.
+- Have [cert-manager](https://github.com/jetstack/cert-manager): >= 1.1.0 [installed](https://cert-manager.io/docs/installation/kubernetes/) within your kubernetes cluster.
 - [Helm 3 installed](https://helm.sh/docs/intro/install/) on your local computer
 
 ## Installation
@@ -112,11 +112,13 @@ metadata:
   name: demo-ingress
   namespace: default
   annotations:
+    # Should be the same as metadata.name of the cluster issuer
     cert-manager.io/cluster-issuer: "letsencrypt-prod"
 spec:
   tls:
   - hosts:
     - 'example.com'
+    # Pick any name as you wish
     secretName: example-com-tls
   rules:
   - host: example.com
