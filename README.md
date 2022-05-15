@@ -1,3 +1,7 @@
+**Since cert-manager introduces built-in support for DNSPod, so do NOT use this repo any more**
+
+****
+
 # Cert-Manager ACME webhook for DNSPod
 
 Cert-manager webhook for DNSPod is a ACME webhook for [cert-manager](https://cert-manager.io) allowing users to use [DNSPod](https://www.dnspod.cn) for DNS01 challenge.
